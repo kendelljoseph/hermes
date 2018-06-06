@@ -1,2 +1,2 @@
-# lunchandlearn-app1
-A lunch and learn app.
+# Hermes
+A lunch and learn messgenger app.
