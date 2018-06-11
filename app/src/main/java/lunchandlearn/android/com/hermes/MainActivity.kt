@@ -11,7 +11,6 @@ import android.content.CursorLoader
 import android.content.Loader
 import android.database.Cursor
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -23,13 +22,14 @@ import java.util.ArrayList
 import android.Manifest.permission.READ_CONTACTS
 
 import kotlinx.android.synthetic.main.activity_main.*
+import lunchandlearn.android.com.hermes.interfaces.GoTaskListener
 
 /**
- * A login screen that offers login via email/password.
+ * A screen that offers a field to be sent to a server with a click of a button
  */
-class MainActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
+class MainActivity : AppCompatActivity(), LoaderCallbacks<Cursor>, GoTaskListener {
     /**
-     * Keep track of the login task to ensure we can cancel it if requested.
+     * Keep track of the task to ensure we can cancel it if requested.
      */
     private var mAuthTask: GoTask? = null
 
@@ -117,52 +117,14 @@ class MainActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true)
-            mAuthTask = GoTask(nameStr)
+            showProgressBar(true)
+            mAuthTask = GoTask(this, nameStr)
             mAuthTask!!.execute(null as Void?)
         }
     }
 
     private fun isNameValid(text: String): Boolean {
         return text.length > 4
-    }
-
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private fun showProgress(show: Boolean) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-
-            login_form.visibility = if (show) View.GONE else View.VISIBLE
-            login_form.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha((if (show) 0 else 1).toFloat())
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            login_form.visibility = if (show) View.GONE else View.VISIBLE
-                        }
-                    })
-
-            login_progress.visibility = if (show) View.VISIBLE else View.GONE
-            login_progress.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha((if (show) 1 else 0).toFloat())
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            login_progress.visibility = if (show) View.VISIBLE else View.GONE
-                        }
-                    })
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            login_progress.visibility = if (show) View.VISIBLE else View.GONE
-            login_form.visibility = if (show) View.GONE else View.VISIBLE
-        }
     }
 
     override fun onCreateLoader(i: Int, bundle: Bundle?): Loader<Cursor> {
@@ -211,37 +173,8 @@ class MainActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         val IS_PRIMARY = 1
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    inner class GoTask internal constructor(private val mName: String) : AsyncTask<Void, Void, Boolean>() {
-
-        override fun doInBackground(vararg params: Void): Boolean? {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000)
-            } catch (e: InterruptedException) {
-                return false
-            }
-
-            return true
-        }
-
-        override fun onPostExecute(success: Boolean?) {
-            mAuthTask = null
-            showProgress(false)
-            finish()
-        }
-
-        override fun onCancelled() {
-            mAuthTask = null
-            showProgress(false)
-        }
-    }
-
+    // This object is basically a singleton common to all instances of MainActivity.kt
+    // https://antonioleiva.com/objects-kotlin/
     companion object {
 
         /**
@@ -254,5 +187,52 @@ class MainActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
          * TODO: remove after connecting to a real authentication system.
          */
         private val DUMMY_CREDENTIALS = arrayOf("foo@example.com:hello", "bar@example.com:world")
+    }
+
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    override fun showProgressBar(show: Boolean) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+
+            login_form.visibility = if (show) View.GONE else View.VISIBLE
+            login_form.animate()
+                    .setDuration(shortAnimTime)
+                    .alpha((if (show) 0 else 1).toFloat())
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            login_form.visibility = if (show) View.GONE else View.VISIBLE
+                        }
+                    })
+
+            login_progress.visibility = if (show) View.VISIBLE else View.GONE
+            login_progress.animate()
+                    .setDuration(shortAnimTime)
+                    .alpha((if (show) 1 else 0).toFloat())
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            login_progress.visibility = if (show) View.VISIBLE else View.GONE
+                        }
+                    })
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            login_progress.visibility = if (show) View.VISIBLE else View.GONE
+            login_form.visibility = if (show) View.GONE else View.VISIBLE
+        }
+    }
+
+    // Cleanup tasks after the GoTask is finished or canceled
+    override fun onTaskCompleted(canceled: Boolean) {
+        mAuthTask = null
+        if (!canceled) {
+            finish() // Close the activity
+        }
     }
 }
