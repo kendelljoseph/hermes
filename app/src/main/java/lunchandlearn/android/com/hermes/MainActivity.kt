@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity(), LoaderCallbacks<Cursor>, GoTaskListene
     /**
      * Keep track of the task to ensure we can cancel it if requested.
      */
-    private var mAuthTask: GoTask? = null
+    private var mGoTask: GoTask? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), LoaderCallbacks<Cursor>, GoTaskListene
         // Set up the login form.
         populateAutoComplete()
 
-        email_sign_in_button.setOnClickListener { attemptLogin() }
+        email_sign_in_button.setOnClickListener { validateAndSendData() }
     }
 
     private fun populateAutoComplete() {
@@ -81,12 +81,10 @@ class MainActivity : AppCompatActivity(), LoaderCallbacks<Cursor>, GoTaskListene
 
 
     /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
+     * Validates the name input data and sends it to the server.
      */
-    private fun attemptLogin() {
-        if (mAuthTask != null) {
+    private fun validateAndSendData() {
+        if (mGoTask != null) {
             return
         }
 
@@ -118,8 +116,8 @@ class MainActivity : AppCompatActivity(), LoaderCallbacks<Cursor>, GoTaskListene
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgressBar(true)
-            mAuthTask = GoTask(this, nameStr)
-            mAuthTask!!.execute(null as Void?)
+            mGoTask = GoTask(this, nameStr)
+            mGoTask!!.execute(null as Void?)
         }
     }
 
@@ -230,7 +228,7 @@ class MainActivity : AppCompatActivity(), LoaderCallbacks<Cursor>, GoTaskListene
 
     // Cleanup tasks after the GoTask is finished or canceled
     override fun onTaskCompleted(canceled: Boolean) {
-        mAuthTask = null
+        mGoTask = null
         if (!canceled) {
             finish() // Close the activity
         }
