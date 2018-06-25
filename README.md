@@ -1,2 +1,2 @@
 # Hermes
-A lunch and learn messgenger app.
+A lunch and learn messenger app.
