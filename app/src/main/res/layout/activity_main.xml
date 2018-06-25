@@ -46,13 +46,25 @@
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/email_sign_in_button"
+                android:id="@+id/btnGo"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/action_go"
                 android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Response: "/>
+
+            <EditText
+                android:id="@+id/txtResponse"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minLines="3"
+                android:lines="3"/>
 
         </LinearLayout>
     </ScrollView>
