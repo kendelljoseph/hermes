@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity(), GoTaskListener { // LoaderCallbacks<Cu
     }
 
     override fun showFailure(response: String) {
-        txtResponse.setText(response)
+        textOutput.setText(response)
     }
 
     override fun showSuccess(response: GitHubUser?) {
@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity(), GoTaskListener { // LoaderCallbacks<Cu
         "\nBio: " + response?.bio +
         "\nGit URL: " + response?.htmlUrl
 
-        txtResponse.setText(text)
+        textOutput.setText(text)
     }
 
 
