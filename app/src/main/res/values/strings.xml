@@ -2,6 +2,8 @@
     <string name="app_name">Hermes</string>
 
     <!-- Strings related to login -->
+    <string name="default_output_text_label">Log:</string>
+    <string name="default_output_text">Hey! The server response and other info will show up here.</string>
     <string name="prompt_name">Name</string>
     <string name="action_go">Go</string>
     <string name="action_sign_in_short">Sign in</string>

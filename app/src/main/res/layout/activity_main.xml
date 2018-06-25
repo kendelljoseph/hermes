@@ -55,16 +55,26 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/textOutputLabel"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Response: "/>
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@string/default_output_text_label"
+                android:inputType="text"
+                android:minLines="1"
+                android:textStyle="bold"
+                android:textSize="18dp"
+                />
 
-            <EditText
-                android:id="@+id/txtResponse"
+            <TextView
+                android:id="@+id/textOutput"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:minLines="3"
-                android:lines="3"/>
+                android:layout_height="wrap_content"
+                android:singleLine="false"
+                android:text="@string/default_output_text"
+                android:inputType="textMultiLine"
+                android:minLines="2"
+                />
 
         </LinearLayout>
     </ScrollView>
